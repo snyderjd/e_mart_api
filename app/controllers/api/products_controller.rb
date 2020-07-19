@@ -9,6 +9,7 @@ class Api::ProductsController < ApplicationController
     # GET to /api/products - gets all products
     def index
         @products = Product.all
+        # render json: @products
         render json: @products
     end
 
