@@ -16,6 +16,9 @@ class User < ApplicationRecord
     validates_presence_of :first_name
     validates_presence_of :last_name
 
+    # Assocations
+    has_many :orders
+
     def can_modify_user?(user_id)
         role == 'admin' || id.to_s == user_id.to_s
     end

@@ -15,11 +15,24 @@ Rails.application.routes.draw do
   patch '/user/:id' => 'users#update'
   delete '/user/:id' => 'users#destroy'
 
+
   namespace :api, defaults: { format: 'json' } do
     resources :products, only: [:index, :show, :create, :update, :destroy]
 
     resources :categories, only: [:index, :show, :create, :update]
+
+    resources :orders, only: [:index, :show, :create, :update, :destroy] do
+      # post 'products' => 'orders#add_product'
+      # delete 'products' => 'orders#remove_product'
+    end
+
+    post 'orders/:id/:product_id' => 'orders#add_product'
+    delete 'orders/:id/:product_id' => 'orders#remove_product'
+
+    resources :order_products, only: [:create, :destroy]
   end
+
+  
 
 end
 
