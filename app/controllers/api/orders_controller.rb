@@ -27,15 +27,24 @@ class Api::OrdersController < ApplicationController
 
   # POST to /api/orders - creates a new order and saves it to the DB
   def create
-    order = Order.new(order_params)
-    order.user_id = current_user.id
-    order.total_cost = 0
+    # Check if current user has an active order
+    if !current_user.has_active_order?
+      # If they don't have an active order, create a new one and save it to the DB
+      order = Order.new(order_params)
+      order.user_id = current_user.id
+      order.total_cost = 0
+    
+      if order.save
+        render json: order
+      else
+        render json: order.errors.full_messages, status: :unprocessable_entity
+      end
 
-    if order.save
-      render json: order
     else
-      render json: order.errors.full_messages, status: :unprocessable_entity
+      # If user already has an active order, let them know
+      render json: current_user.active_order
     end
+
   end
 
   # POST to /api/orders/:order_id/products - adds a product to the user's cart (their current active order)

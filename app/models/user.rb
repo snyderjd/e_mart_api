@@ -26,5 +26,20 @@ class User < ApplicationRecord
     def is_admin?
         role == 'admin'
     end
+
+    def has_active_order?
+        order = self.orders.find_by(is_complete: false)
+
+        if order
+            return true
+        else
+            return false
+        end
+    end
+
+    def active_order
+        order = self.orders.find_by(is_complete: false)
+        order
+    end
     
 end
