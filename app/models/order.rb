@@ -27,4 +27,15 @@ class Order < ApplicationRecord
   #   self.total_cost = product_costs.sum()
   # end
 
+  # Calculates and updates an order's total cost, which is the sum of prices for all the products on that order
+  def calculate_total_cost
+    total_cost = 0;
+
+    self.products.each do |product|
+      total_cost += product.price
+    end
+
+    self.total_cost = total_cost
+  end
+
 end

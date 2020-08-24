@@ -30,7 +30,7 @@ class Api::OrdersController < ApplicationController
     # Check if current user has an active order
     if !current_user.has_active_order?
       # If they don't have an active order, create a new one and save it to the DB
-      order = Order.new(order_params)
+      order = Order.new()
       order.user_id = current_user.id
       order.total_cost = 0
     
@@ -53,6 +53,11 @@ class Api::OrdersController < ApplicationController
     product = Product.find(params[:product_id])
 
     order.products << product
+
+    # Update the order's total cost and save it to the database
+    order.total_cost = order.calculate_total_cost
+    order.save
+
     render json: order
   end
 
@@ -62,6 +67,11 @@ class Api::OrdersController < ApplicationController
     product = Product.find(params[:product_id])
 
     order.products.delete(product)
+
+    # Update the order's total cost and save it to the database
+    order.total_cost = order.calculate_total_cost
+    order.save
+    
     render json: order
   end
 
