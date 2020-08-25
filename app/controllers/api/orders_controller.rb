@@ -75,6 +75,17 @@ class Api::OrdersController < ApplicationController
     render json: order
   end
 
+  # PUT/PATCH to /api/orders/id - updates an order and saves it to the DB
+  def update
+    order = Order.find(params[:id])
+
+    if order.update_attributes(order_params)
+      render json: order
+    else
+      render json: order.errors.full_messages, status: :unprocessable_entity
+    end
+  end
+
   # DELETE to /api/orders/id - deletes an order
   def destroy
     order = Order.find(params[:id])
