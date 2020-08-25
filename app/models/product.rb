@@ -4,6 +4,8 @@ class Product < ApplicationRecord
     # Can't use presencce validation with boolean field
     validates :is_active, inclusion: { in: [true, false] }
 
+    # Associations
     belongs_to :category
+    has_many :order_products
 end
 

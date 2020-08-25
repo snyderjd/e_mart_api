@@ -16,12 +16,30 @@ class User < ApplicationRecord
     validates_presence_of :first_name
     validates_presence_of :last_name
 
+    # Assocations
+    has_many :orders
+
     def can_modify_user?(user_id)
         role == 'admin' || id.to_s == user_id.to_s
     end
 
     def is_admin?
         role == 'admin'
+    end
+
+    def has_active_order?
+        order = self.orders.find_by(is_complete: false)
+
+        if order
+            return true
+        else
+            return false
+        end
+    end
+
+    def active_order
+        order = self.orders.find_by(is_complete: false)
+        order
     end
     
 end
