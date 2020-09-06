@@ -20,6 +20,9 @@ gem 'active_model_serializers'
 gem 'knock'
 gem 'jwt'
 
+# Cloudinary for image storage and retrieval
+gem 'cloudinary'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
