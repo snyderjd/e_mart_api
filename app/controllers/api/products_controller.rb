@@ -46,6 +46,13 @@ class Api::ProductsController < ApplicationController
         render json: @product
     end
 
+    # DELETE to /api/products/id/image - deletes a product's image
+    def destroy_image
+        @product = Product.find(params[:product_id])
+        @product.image.purge
+        render json: @product
+    end
+
     private
 
     def product_params
