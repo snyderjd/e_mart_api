@@ -8,8 +8,20 @@ class Api::ProductsController < ApplicationController
 
     # GET to /api/products - gets all products
     def index
-        @products = Product.all
-        render json: @products
+        if params[:q]
+            string = params[:q].downcase
+
+            # Include products where name or description contains the query param
+            @products = Product.where(
+                "lower(name) LIKE :q OR lower(description) LIKE :q", 
+                q: "%#{string}%", 
+                q: "%#{string}%")
+
+            render json: @products
+        else
+            @products = Product.all
+            render json: @products
+        end
     end
 
     # GET to /api/products/id - gets one product
