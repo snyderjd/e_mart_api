@@ -18,6 +18,11 @@ class Api::ProductsController < ApplicationController
                 q: "%#{string}%")
 
             render json: @products
+        elsif params[:category_id]
+
+            # Include products with the category_id
+            @products = Product.where("category_id = ?", params[:category_id])
+            render json: @products 
         else
             @products = Product.all
             render json: @products
