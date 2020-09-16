@@ -76,4 +76,69 @@ class Api::ProductsController < ApplicationController
         params.permit(:name, :description, :category_id, :price, :quantity, :is_active, :image)
     end
 
+    # Handles searching, filtering, and sorting of products as necessary
+    def searchFilterSortProducts
+        products = []
+        search_string = params[:q] ?? params[:q].downcase : ""
+
+        if params[:q] && params[:category_id]
+            # Search and filter
+
+            products = Product.where(
+                "lower(name) LIKE :q OR lower(description) LIKE :q
+                AND category_id = :category_id",
+                q: "%#{search_string}%",
+                q: "%#{search_string}%",
+                category_id: params[:category_id]
+            )
+
+        elsif params[:q] && !params[:category_id]
+            # Search, no filter
+            products = Product.where(
+                "lower(name) LIKE :q OR lower(description) LIKE :q",
+                q: "%#{search_string}%",
+                q: "%#{search_string}%"
+            )
+
+        elsif !params[:q] && params[:category_id]
+            # No search, filter
+            products = Product.where("category_id = ?", params[:category_id])
+        else
+            # No search, No filter
+            products = Product.all
+        end
+
+        # Sort the products by price, low to high
+        if params[:sort] === "price_ascending"
+
+        end
+
+        # Sort the products by price, high to low
+        if params[:sort] === "price_descending"
+
+        end
+
+        products
+    end
+
+    # if params[:q]
+    #     string = params[:q].downcase
+
+    #     # Include products where name or description contains the query param
+    #     @products = Product.where(
+    #         "lower(name) LIKE :q OR lower(description) LIKE :q", 
+    #         q: "%#{string}%", 
+    #         q: "%#{string}%")
+
+    #     render json: @products
+    # elsif params[:category_id]
+
+    #     # Include products with the category_id
+    #     @products = Product.where("category_id = ?", params[:category_id])
+    #     render json: @products 
+    # else
+    #     @products = Product.all
+    #     render json: @products
+    # end
+
 end
