@@ -8,25 +8,11 @@ class Api::ProductsController < ApplicationController
 
     # GET to /api/products - gets all products
     def index
-        if params[:q]
-            string = params[:q].downcase
+        @products = search_filter_products
 
-            # Include products where name or description contains the query param
-            @products = Product.where(
-                "lower(name) LIKE :q OR lower(description) LIKE :q", 
-                q: "%#{string}%", 
-                q: "%#{string}%")
+        @products = sort_products(@products)
 
-            render json: @products
-        elsif params[:category_id]
-
-            # Include products with the category_id
-            @products = Product.where("category_id = ?", params[:category_id])
-            render json: @products 
-        else
-            @products = Product.all
-            render json: @products
-        end
+        render json: @products
     end
 
     # GET to /api/products/id - gets one product
@@ -74,6 +60,60 @@ class Api::ProductsController < ApplicationController
 
     def product_params
         params.permit(:name, :description, :category_id, :price, :quantity, :is_active, :image)
+    end
+
+    # Handles searching, filtering, and sorting of products as necessary
+    def search_filter_products
+        products = []
+        search_string = params[:q] ? params[:q].downcase : ""
+
+        if params[:q] && params[:category_id]
+            # Search and filter
+
+            products = Product.where(
+                "lower(name) LIKE :q OR lower(description) LIKE :q
+                AND category_id = :category_id",
+                q: "%#{search_string}%",
+                q: "%#{search_string}%",
+                category_id: params[:category_id]
+            )
+
+        elsif params[:q] && !params[:category_id]
+            # Search, no filter
+            products = Product.where(
+                "lower(name) LIKE :q OR lower(description) LIKE :q",
+                q: "%#{search_string}%",
+                q: "%#{search_string}%"
+            )
+
+        elsif !params[:q] && params[:category_id]
+            # No search, filter
+            products = Product.where("category_id = ?", params[:category_id])
+        else
+            # No search, No filter
+            products = Product.all
+        end
+
+        products
+    end
+
+    def sort_products(products)
+        # Sort the products by price, low to high
+        if params[:sort] === "price_ascending"
+            products = products.sort { |a, b| a.price <=> b.price }
+        end
+
+        # Sort the products by price, high to low
+        if params[:sort] === "price_descending"
+            products = products.sort { |a, b| b.price <=> a.price }
+        end
+
+        # Sort the products alphabetically by name
+        if params[:sort] === "a_to_z"
+            products = products.sort { |a, b| a.name <=> b.name }
+        end
+
+        products
     end
 
 end
