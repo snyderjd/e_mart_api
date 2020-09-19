@@ -10,7 +10,7 @@ class Api::ProductsController < ApplicationController
     def index
         @products = search_filter_products
 
-        @products = sort_products(@products).paginate(page: params[:page], per_page: 10)
+        @products = sort_products(@products).paginate(page: params[:page], per_page: 5)
 
         render json: @products
     end
@@ -100,17 +100,17 @@ class Api::ProductsController < ApplicationController
     def sort_products(products)
         # Sort the products by price, low to high
         if params[:sort] === "price_ascending"
-            products = products.sort { |a, b| a.price <=> b.price }
+            products = Product.order("price ASC")
         end
 
         # Sort the products by price, high to low
         if params[:sort] === "price_descending"
-            products = products.sort { |a, b| b.price <=> a.price }
+            products = Product.order("price DESC")
         end
 
         # Sort the products alphabetically by name
         if params[:sort] === "a_to_z"
-            products = products.sort { |a, b| a.name <=> b.name }
+            products = Product.order("name")
         end
 
         products
