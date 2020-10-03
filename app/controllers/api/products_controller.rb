@@ -13,11 +13,10 @@ class Api::ProductsController < ApplicationController
         @products = sort_products(@products).paginate(page: params[:page], per_page: 5)
         total_count = @products.count
 
-        # render json: @products
-        render json: {
-            products: @products,
-            total_entries: @products.total_entries
-        }
+        # render serialized products with metadata for pagination
+        render json: @products, 
+                    meta: {total_entries: @products.total_entries}, 
+                    adapter: :json
     end
 
     # GET to /api/products/id - gets one product
