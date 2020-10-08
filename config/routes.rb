@@ -19,8 +19,10 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: 'json' } do
     resources :products, only: [:index, :show, :create, :update, :destroy] do
       delete 'image' => 'products#destroy_image'
-      resources :reviews, only: [:index, :show, :create, :update, :destroy]
+      resources :reviews, only: [:index, :show, :create]
     end
+
+    resources :reviews, only: [:update, :destroy]
 
     resources :categories, only: [:index, :show, :create, :update]
 
