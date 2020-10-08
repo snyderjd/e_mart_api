@@ -16,7 +16,15 @@ class Api::ReviewsController < ApplicationController
 
   # POST to /api/products/:product_id/reviews - creates a review for a product and saves to the DB
   def create
+    @product = Product.find(params[:product_id])
+    @review = @product.reviews.build(review_params)
+    @review.user_id = current_user.id
 
+    if @review.save
+      render json: @review
+    else
+      render json: @review.errors.full_messages, status: :unprocessable_entity
+    end
   end
 
   # PUT to /api/products/:product_id/reviews/:id - updates a review for a product and saves to the DB

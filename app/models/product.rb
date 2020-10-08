@@ -11,7 +11,7 @@ class Product < ApplicationRecord
     # Associations
     belongs_to :category
     has_many :order_products
-    has_many :reviews
+    has_many :reviews, dependent: :destroy
 
     has_one_attached :image
 
