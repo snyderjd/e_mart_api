@@ -1,5 +1,11 @@
 class OrderSerializer < ActiveModel::Serializer
-  attributes :id, :user, :is_complete, :total_cost, :created_at, :updated_at, :products
+  attributes  :id, 
+              :user, 
+              :is_complete, 
+              :total_cost, 
+              :created_at, 
+              :updated_at, 
+              :products
 
   # Return the image_url for each product
   def products
