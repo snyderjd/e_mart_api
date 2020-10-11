@@ -4,14 +4,16 @@ class Api::ReviewsController < ApplicationController
 
   # GET to /api/products/:product_id/reviews - gets all the reviews for a product
   def index
-    reviews = Review.where("product_id = ?", params[:product_id]);
+    @reviews = Review.where("product_id = ?", params[:product_id]);
 
-    render json: reviews
+    render json: @reviews
   end
 
-  # GET to /api/products/:product_id/reviews/:id - gets a single review
+  # GET to /api/reviews/:id - gets a single review
   def show
+    @review = Review.find(params[:id])
 
+    render json: @review
   end
 
   # POST to /api/products/:product_id/reviews - creates a review for a product and saves to the DB
