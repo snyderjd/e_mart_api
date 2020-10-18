@@ -18,6 +18,7 @@ class User < ApplicationRecord
 
     # Assocations
     has_many :orders
+    has_many :reviews
 
     def can_modify_user?(user_id)
         role == 'admin' || id.to_s == user_id.to_s
